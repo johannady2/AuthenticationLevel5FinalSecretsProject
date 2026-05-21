@@ -60,12 +60,12 @@ app.get("/secrets", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       const result = await db.query(
-        `SELECT secret FROM users WHERE email = $1`,
+        `SELECT secrets FROM users WHERE email = $1`,
         [req.user.email]
       );
-      const secret = result.rows[0] ? result.rows[0].secret : null;
+      const secrets = result.rows[0] ? result.rows[0].secrets : null;
       res.render("secrets.ejs", {
-        secret: secret || "Jack Bauer is my hero.",
+        secrets: secrets || "Please submit a secret.",
       });
     } catch (err) {
       console.log(err);
@@ -146,7 +146,7 @@ app.post("/register", async (req, res) => {
 app.post("/submit", async (req, res) => {
   const submittedSecret = req.body.secret;
   try {
-    await db.query("UPDATE users SET secret = $1 WHERE email = $2", [
+    await db.query("UPDATE users SET secrets = $1 WHERE email = $2", [
       submittedSecret,
       req.user.email,
     ]);
